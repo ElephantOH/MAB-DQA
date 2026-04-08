@@ -1,8 +1,6 @@
-MAB-DQA: Addressing Query Aspect Importance in Document Question Answering with Multi-Armed Bandits
-===
-### ACL 2026 (Main Conference🚀) | [📄 Paper](https://arxiv.org/)
+# MAB-DQA: Addressing Query Aspect Importance in Document Question Answering with Multi-Armed Bandits
 
-----
+> #### ACL 2026 (Main Conference🚀) | [📄 Paper](https://arxiv.org/)
 
 ## Overview
 
