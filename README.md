@@ -1,13 +1,6 @@
-<hr>
-<h1 align="center">
-  MAB-DQA <br>
-  <sub>MAB-DQA: Addressing Query Aspect Importance in Document Question Answering with Multi-Armed Bandits</sub>
-</h1>
-The paper has been accepted by ACL 2026 Main Conference.
-<h3 align="center">
-  <a href="https://www.sciencedirect.com/science/article/abs/pii/S0925231225031443">Page (#TODO)</a>
-</h3>
-<hr>
+MAB-DQA: Addressing Query Aspect Importance in Document Question Answering with Multi-Armed Bandits
+===
+### ACL 2026 (Main Conference🚀) | [📄 Paper](https://arxiv.org/abs/2412.20977)
 
 ## Overview
 
