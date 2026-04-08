@@ -1,0 +1,7 @@
+
+question_key: question
+retrieval_key: retrieval
+answer_key: answer
+
+max_page: 5000
+max_character_per_page: 10000

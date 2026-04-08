@@ -1,0 +1,4 @@
+
+temperature: 0.0
+max_new_tokens: 255
+checkpoints_path: /raid/xyx/MAB-DQA/checkpoints

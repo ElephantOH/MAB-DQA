@@ -1,0 +1,17 @@
+mission_key: "close_domain_dqa"
+dataset_directory: datasets
+results_directory: results
+
+document_name: documents
+sample_name: samples
+index_name: none
+work_name: work
+
+dataset_path: ./${dataset_directory}/${dataset_name}
+sample_origin_path: ./${dataset_directory}/${dataset_name}/${sample_name}.json
+sample_dump_path: ./${result_path}/sample/${sample_name}.json
+document_path: ./${dataset_directory}/${dataset_name}/${document_name}
+
+
+result_path: ./${results_directory}/${mission_key}/${dataset_name}
+work_path: ${result_path}/${work_name}
