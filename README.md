@@ -88,7 +88,7 @@ if __name__ == "__main__":
 
 Run the following command:
 ```bash
-python scripts/retrieval_mab.py
+python src/retrieval_mab.py
 ```
 
 The inference results will be saved to:  
