@@ -114,7 +114,12 @@ results/<mission>/<dataset>/sample<suffix>.json
 You are encouraged to modify/distribute this code. However, please acknowledge this code and cite the paper appropriately.
 
 ```bibtex
-#TODO
+@misc{xiang2026mab,
+      title={MAB-DQA: Addressing Query Aspect Importance in Document Question Answering with Multi-Armed Bandits}, 
+      author={Yixin Xiang and Yunshan Ma and Xiaoyu Du and Yibing Chen and Yanxin Zhang and Jinhui Tang},
+      year={2026},
+      doi={10.48550/arXiv.2604.08952},
+}
 ```
 
 ---
