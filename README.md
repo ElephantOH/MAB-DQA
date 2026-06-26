@@ -2,6 +2,15 @@
 
 > #### ACL 2026 (Main Conference🚀) | [📄 Paper](https://arxiv.org/pdf/2604.08952)
 
+## 📌 Update Log & Roadmap
+
+| Date       | Status | Description                                                                 |
+|------------|--------|-----------------------------------------------------------------------------|
+| 2026-06-26 | ✅     | Fixed path initialization error in `fast_run.py` when config path is not correctly configured |
+| 2026-06-26 | ✅     | Fixed page index offset bug of ColPali retriever on multi-page PDF documents |
+| TBD        | ⏳     | Complete code refactoring of Question Answering module and full open-source release |
+| TBD        | ⏳     | Adapt low-memory inference mode for lightweight deployment                  |
+
 ## Overview
 
 > **Abstract:** \
