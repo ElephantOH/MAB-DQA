@@ -121,11 +121,27 @@ results/<mission>/<dataset>/sample<suffix>.json
 You are encouraged to modify/distribute this code. However, please acknowledge this code and cite the paper appropriately.
 
 ```bibtex
-@misc{xiang2026mab,
-      title={MAB-DQA: Addressing Query Aspect Importance in Document Question Answering with Multi-Armed Bandits}, 
-      author={Yixin Xiang and Yunshan Ma and Xiaoyu Du and Yibing Chen and Yanxin Zhang and Jinhui Tang},
-      year={2026},
-      doi={10.48550/arXiv.2604.08952},
+@inproceedings{xiang-etal-2026-mab,
+    title = "{MAB}-{DQA}: Addressing Query Aspect Importance in Document Question Answering with Multi-Armed Bandits",
+    author = "Xiang, Yixin  and
+      Ma, Yunshan  and
+      Du, Xiaoyu  and
+      Chen, Yibing  and
+      Zhang, Yanxin  and
+      Tang, Jinhui",
+    editor = "Liakata, Maria  and
+      Moreira, Viviane P.  and
+      Zhang, Jiajun  and
+      Jurgens, David",
+    booktitle = "Proceedings of the 64th Annual Meeting of the {A}ssociation for {C}omputational {L}inguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2026",
+    address = "San Diego, California, United States",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2026.acl-long.1053/",
+    doi = "10.18653/v1/2026.acl-long.1053",
+    pages = "22973--22992",
+    ISBN = "979-8-89176-390-6",
 }
 ```
 
