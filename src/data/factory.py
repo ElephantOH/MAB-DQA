@@ -3,7 +3,6 @@ from typing import Any
 from omegaconf import DictConfig, OmegaConf
 from src.config.config_loader import load_dataset_config
 from src.data.close_domain_dqa_dataset import CloseDomainDQADataset
-from src.data.open_domain_dqa_dataset import OpenDomainDQADataset
 
 CURRENT_FILE_PATH = os.path.abspath(__file__)
 
@@ -11,7 +10,6 @@ class DatasetFactory:
 
     _MISSION_REGISTRY = {
         "close_domain_dqa": CloseDomainDQADataset,
-        "open_domain_dqa": OpenDomainDQADataset,
     }
 
     _Dataset_REGISTRY = {

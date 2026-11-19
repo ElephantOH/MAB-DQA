@@ -1,2 +1,6 @@
 defaults:
   - _self_
+
+hydra:
+  job:
+    chdir: false

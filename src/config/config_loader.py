@@ -1,8 +1,13 @@
 import os
+from pathlib import Path
 from omegaconf import OmegaConf, DictConfig
 
 CURRENT_FILE_PATH = os.path.abspath(__file__)
 BASE_CONFIG_NAME = "base.yaml"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+if not OmegaConf.has_resolver("repo_root"):
+    OmegaConf.register_new_resolver("repo_root", lambda: str(REPO_ROOT))
 
 def _check_file_exists(file_path: str) -> None:
     """
