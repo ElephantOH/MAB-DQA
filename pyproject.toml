@@ -1,0 +1,66 @@
+[project]
+name = "mab-dqa"
+version = "0.1.0"
+description = "MAB-DQA: Addressing Query Aspect Importance in Document Question Answering with Multi-Armed Bandits"
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "torch==2.8.0",
+    "torchaudio==2.8.0",
+    "torchvision==0.23.0",
+    "transformers==4.56.0",
+    "scikit-learn==1.7.2",
+    "accelerate==1.10.1",
+    "datasets==4.1.0",
+    "sentence-transformers==5.1.0",
+    "peft",
+    "pandas",
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "openai",
+    "llama-index",
+    "fastapi",
+    "uvicorn",
+    "tqdm",
+    "pyyaml",
+    "python-dotenv",
+    "hydra-core",
+    "pydantic",
+    "seaborn",
+    "prettytable",
+    "jsonlines",
+    "tokenizers",
+    "loguru",
+    "requests",
+    "setuptools",
+    "bitsandbytes",
+    "safetensors",
+    "gpustat",
+    "icecream",
+    "pdf2image",
+    "editdistance",
+    "einops",
+    "fire",
+    "timm",
+    "sentencepiece",
+    "easyocr",
+    "qwen-vl-utils",
+    "faiss-cpu",
+    "word2number",
+    "pymupdf",
+    "pytz",
+    "ujson",
+    "gitpython",
+    "bitarray",
+    "psutil",
+]
+
+[tool.uv]
+package = false
+# One lockfile for both supported machines. Linux wheels of torch 2.8 include
+# CUDA 12.8; the macOS wheels use Apple's GPU.
+environments = [
+    "sys_platform == 'darwin'",
+    "sys_platform == 'linux' and platform_machine == 'x86_64'",
+]

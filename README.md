@@ -6,6 +6,8 @@
 
 | Date       | Status | Description                                                                 |
 |------------|--------|-----------------------------------------------------------------------------|
+| 2026-11-18 | ✅     | Same pipeline on macOS (Apple GPU) and Linux (CUDA): shared uv lockfile, portable checkpoint path |
+| 2026-11-17 | ✅     | Migrated environment setup from conda to uv with Python 3.13 |
 | 2026-06-26 | ✅     | Fixed path initialization error in `fast_run.py` when config path is not correctly configured |
 | 2026-06-26 | ✅     | Fixed page index offset bug of ColPali retriever on multi-page PDF documents |
 | TBD        | ⏳     | Complete code refactoring of Question Answering module and full open-source release |
@@ -21,31 +23,42 @@ This task requires interpreting visual layouts, which has prompted recent studie
 
 ## 🐹 Installation
 
-This repository has been developed and tested with `CUDA 11.7` and `Python 3.12`. Below commands create a conda environment with required packages. Make sure conda is installed.
+This repository uses [uv](https://docs.astral.sh/uv/) with `Python 3.13`. One lockfile (`uv.lock`) covers both supported machines. The models, prompts, and bandit loop are the same as the paper. Only the device changes:
 
-1. Clone this repository and navigate to `MAB-DQA` folder
+| Machine | PyTorch wheel from the lockfile | Retriever | VLM |
+| --- | --- | --- | --- |
+| Linux x86_64 with NVIDIA GPUs | `torch==2.8.0` built for CUDA 12.8 | `cuda:0` | `device_map: auto` (the paper's setting; uses the visible GPUs) |
+| macOS Apple silicon | `torch==2.8.0` with Apple's GPU | `mps` | `device_map: auto` (lands on `mps`) |
+
+On a machine with no GPU, both fall back to CPU. On macOS, operations Apple's GPU does not implement fall back to CPU (`PYTORCH_ENABLE_MPS_FALLBACK=1`, set by the entry scripts). Scores can differ slightly from a CUDA run when that happens. The retrieved pages and the scoring formula stay the ones in the paper.
+
+Make sure uv is installed (`curl -LsSf https://astral.sh/uv/install.sh | sh`).
+
+1. Clone this repository and navigate to `MAB-DQA`
 
 ```bash
-git clone https://github.com/ElephantOH/MAB-DQA.git
+git clone https://github.com/MyLabs-LLC/MAB-DQA.git
 cd MAB-DQA
 ```
 
-2. Install Package
+2. Install. `uv sync` picks the wheel for the machine you are on.
 
 ```bash
-chmod +x setup_env.sh && ./setup_env.sh
-conda activate mab_dqa
+uv sync
+source .venv/bin/activate
 ```
+
+`./setup_env.sh` does the same thing and, unless `UV_DEFAULT_INDEX` is already set, first picks the faster of the Tsinghua mirror and PyPI. You can also prefix commands with `uv run` instead of activating `.venv`.
+
+To use a different CUDA build on Linux, point uv at that [PyTorch index](https://docs.astral.sh/uv/guides/integration/pytorch/). Add packages with `uv add`, not `pip install`. Restrict GPUs with `CUDA_VISIBLE_DEVICES` before launching; the scripts no longer pin a lab-specific GPU id.
 
 ## 🤖 Model Checkpoints
 
-The models listed below can be downloaded from the Hugging Face Hub. Use the following commands to clone a repository:
-```bash
-# Install Git LFS if you haven't already
-# git lfs install
+Download the two models the retrieval script loads. The directory names have to match `configs/model/`. `uv run --env-file .env` picks up `HF_TOKEN` if you keep one in `.env` (that file is gitignored).
 
-# Clone the model repository
-git clone https://huggingface.co/[REPO_ID]
+```bash
+uv run hf download vidore/colpali-v1.3-merged --local-dir checkpoints/Colpali
+uv run hf download Qwen/Qwen2.5-VL-7B-Instruct --local-dir checkpoints/Qwen2.5-VL-7B-Instruct
 ```
 
 The following table provides direct links to the Hugging Face repositories for each model checkpoint:
@@ -58,13 +71,24 @@ The following table provides direct links to the Hugging Face repositories for e
 | Qwen2.5-VL-7B-Instruct       | [Qwen/Qwen2.5-VL-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct) |
 | Qwen3-VL-32B-Instruct        | [Qwen/Qwen3-VL-32B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-32B-Instruct)   |
 
-, and place it in the `checkpoints` directory.
-
-Please browse all places with `{Enter the model weight address here.}` under the `config` folder (usually in the `base` file). Supplement the absolute address of the current project.
+The other rows are optional checkpoints used by other configs. Put each one in `checkpoints/` under the directory name that config's `model_path` expects.
 
 ## 🎯 Fast Run
 
-You can use the startup toolkit we provide to verify if the code is valid, using the code `python fast_run.py`. Please ensure that the `configs` is correct and the `checkpoints` have been downloaded.
+From the repository root, with the checkpoints below on disk:
+
+```bash
+# Linux (CUDA). Add CUDA_VISIBLE_DEVICES=0 to keep the VLM on one GPU.
+python src/retrieval_mab.py
+
+# macOS. The script enables the Apple-GPU CPU fallback itself.
+python src/retrieval_mab.py
+
+# One PDF, no dataset. Same models and top-10 budget as the paper's fast run.
+python fast_run.py
+```
+
+`checkpoints_path` in `configs/model/base.yaml` resolves to this repository's `checkpoints/` directory on either machine. Run the commands from the repository root so `datasets/` and `results/` resolve as well.
 
 ```
 from src.tools.close_domain_dqa.mab_retrieval_tools import MABRetrieverTools
@@ -85,17 +109,21 @@ if __name__ == "__main__":
 
 ## 🐼 Prepare Dataset
 
-- Create a `datasets` directory, and:
-    ```bash
-    chmod +x setup_dataset.sh && ./setup_dataset.sh
-    ```
-- Download the dataset from [huggingface](https://huggingface.co/datasets/Lillianwei/Mdocagent-dataset) and place it in the `dataset` directory.
+Run the script below after `setup_env.sh`. It downloads the [Mdocagent dataset](https://huggingface.co/datasets/Lillianwei/Mdocagent-dataset) into `datasets/` using the faster of huggingface.co and hf-mirror.com:
+
+```bash
+chmod +x setup_dataset.sh
+./setup_dataset.sh              # all datasets
+./setup_dataset.sh MMLongBench  # or only the ones you need
+```
+
+Each dataset ends up as `datasets/<name>/samples.json` plus `datasets/<name>/documents/*.pdf`. Set `HF_ENDPOINT` to skip the speed test.
 
 ## 🐣 Retrieval
 
 Run the following command:
 ```bash
-python src/retrieval_mab.py
+uv run python src/retrieval_mab.py
 ```
 
 The inference results will be saved to:  
@@ -112,9 +140,9 @@ results/<mission>/<dataset>/sample<suffix>.json
 
 1. Add your OpenAI API key in `config/model/openai/gpt-4o.yaml`.
 
-2. Run the `src/eval_rag.py`.
+2. Run `uv run python src/eval_rag.py`.
 
-3. Run the `src/eval_qa.py`.
+3. Run `uv run python src/eval_qa.py`.
 
 ## 🐭 Citation
 

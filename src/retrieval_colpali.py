@@ -3,9 +3,9 @@ import sys
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent))
-os.environ["CUDA_VISIBLE_DEVICES"] = "2"
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:64"
-os.environ['TORCH_CUDA_ARCH_LIST'] = '7.0'
+from src.until.runtime_env import prepare_runtime_env
+
+prepare_runtime_env()
 CURRENT_FILE_PATH = os.path.abspath(__file__)
 
 import hydra
@@ -14,7 +14,7 @@ import argparse
 from tqdm import tqdm
 from src.model.factory import ModelFactory
 from src.data.factory import DatasetFactory
-from src.until.late_interaction import late_interaction, get_top_page
+from src.until.late_interaction import late_interaction, get_top_page, get_torch_device
 
 def parse_args():
 
@@ -94,7 +94,7 @@ def main(config):
     args = parse_args()
     retrival_name = "colpali"
     sample_name = "samples"
-    retrieval_device = f"cuda:{0}"
+    retrieval_device = get_torch_device("auto")
     resume = False
 
     batch_size = 16

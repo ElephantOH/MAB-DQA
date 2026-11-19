@@ -182,7 +182,7 @@ class Qwen2VLClient(BaseVLMClient):
             return_tensors="pt",
         )
 
-        inputs = inputs.to("cuda")
+        inputs = inputs.to(self.model.device)
 
         generated_ids = self.model.generate(**inputs, max_new_tokens=self.config.max_new_tokens)
 

@@ -3,9 +3,9 @@ import sys
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent))
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:64"
-os.environ['TORCH_CUDA_ARCH_LIST'] = '7.0'
+from src.until.runtime_env import prepare_runtime_env
+
+prepare_runtime_env()
 CURRENT_FILE_PATH = os.path.abspath(__file__)
 
 import torch
@@ -15,7 +15,7 @@ from tqdm import tqdm
 from src.prompt.prompt_mab import PROMPTS
 from src.model.factory import ModelFactory
 from src.data.factory import DatasetFactory
-from src.until.late_interaction import late_interaction, get_top_page
+from src.until.late_interaction import late_interaction, get_top_page, get_torch_device
 from src.mab.document_hypergraph import DocumentHypergraph
 from src.mab.thompson_sampling import ThompsonSamplingBandit
 
@@ -117,8 +117,9 @@ def main(config):
 
     retrival_name = "mab"
     sample_name = "samples"
-    retrieval_device = f"cuda:{0}"
-    vlm_device = f"auto"
+    retrieval_device = get_torch_device("auto")
+    vlm_device = "auto"
+    print(f"[Info] [{CURRENT_FILE_PATH}] Retriever device: {retrieval_device}. VLM device_map: {vlm_device}.")
     resume = True
 
     batch_size = 16

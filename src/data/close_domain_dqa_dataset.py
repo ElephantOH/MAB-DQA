@@ -81,10 +81,14 @@ class CloseDomainDQADataset(DQADataset):
             target_path = os.path.join(dirname, f"{name}{suffix}{ext}") if suffix else None
             default_path = os.path.join(dirname, f"{name}{ext}")
             
+            origin_path = os.path.join(os.path.dirname(self.sample_origin_path), f"{name}{ext}")
+
             if target_path and os.path.exists(target_path):
                 path = target_path
             elif os.path.exists(default_path):
                 path = default_path
+            elif suffix is not None and os.path.exists(origin_path):
+                path = origin_path
             else:
                 print(f"[Warning] [{CURRENT_FILE_PATH}] {target_path or default_path} no Exists.")
 

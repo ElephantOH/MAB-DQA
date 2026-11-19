@@ -90,7 +90,7 @@ class ColPali(PaliGemmaPreTrainedModel):
                 )
 
             # 如果 device_map 是简单的设备字符串
-            elif isinstance(device_map, str) and device_map in ["cpu", "cuda", "cuda:0", "cuda:1"]:
+            elif isinstance(device_map, (str, torch.device)):
                 model = model.to(device_map)
 
             # 如果 device_map 是字典，使用 accelerate 的 dispatch_model

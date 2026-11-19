@@ -7,15 +7,15 @@ from dataclasses import dataclass
 
 import numpy as np
 
-sys.path.append(str(Path(__file__).parent.parent))
-os.environ["CUDA_VISIBLE_DEVICES"] = "2,3"
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:64"
-os.environ['TORCH_CUDA_ARCH_LIST'] = '7.0'
+sys.path.append(str(Path(__file__).parent.parent.parent.parent))
+from src.until.runtime_env import prepare_runtime_env
+
+prepare_runtime_env()
 CURRENT_FILE_PATH = os.path.abspath(__file__)
 
 from src.prompt.prompt_mab import PROMPTS
 from src.model.factory import ModelFactory
-from src.until.late_interaction import late_interaction, get_top_page
+from src.until.late_interaction import late_interaction, get_top_page, get_torch_device
 from src.mab.document_hypergraph import DocumentHypergraph
 from src.mab.thompson_sampling import ThompsonSamplingBandit
 
@@ -150,7 +150,7 @@ class MABRetrieverTools:
         self.is_clip = True
         self.question_key = "question"
       
-        self.retrieval_device = f"cuda:{0}"
+        self.retrieval_device = get_torch_device("auto")
         self.vlm_device = f"auto"
         self.retrival_name = "mab"
         self.retrieval_key = f"retrieval[{self.retrival_name}]"
